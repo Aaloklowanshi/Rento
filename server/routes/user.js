@@ -29,6 +29,17 @@ router.post("/properties", authenticateJwt,async (req, res) => {
       }
   });
 
+  router.get("/me", authenticateJwt, async (req, res) => {
+    const user = await User.findOne({ user: req.user.username });
+    if (!user) {
+      res.status(403).json({msg: "Admin doesnt exist"})
+      return
+    }
+    res.json({
+        email: user.email
+    })
+});
+
   router.get("/posts", authenticateJwt, async (req, res) => {
     try {
       const user = req.user;
@@ -153,7 +164,18 @@ router.post("/properties", authenticateJwt,async (req, res) => {
     }
   });
   
-  
+  //search
+ router.get("/search",async(req , res) =>{
+  const {query} = req.query;
+  try{
+    const properties = await Property.find({ name: { $regex: new RegExp(query, 'i') } });
+    res.json(properties);
+  }
+  catch(err){
+    console.log("error searching the product" , err);
+  }
+
+ })
   
 
   

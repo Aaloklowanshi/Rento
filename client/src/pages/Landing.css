@@ -15,6 +15,8 @@
   .landing-image-section {
     max-width: 600px;
     flex: 1;
+    overflow-x: hidden;
+    overflow-y: hidden;
   }
   .landing-text-section {
     flex: 1;
@@ -25,7 +27,7 @@
   }
 
   .landingpage-img{
-    height: 100vh;
+    height: 42vh;
     width: 100vw;
   }
   
@@ -38,4 +40,7 @@
     transform: translate(-50%,-50%);
     margin-left: 10%;
   }
+
+
+  
   

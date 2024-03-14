@@ -7,6 +7,9 @@
     import { useNavigate } from 'react-router-dom';
 
      export function Login() {
+        const google = () => {
+            window.open("http://localhost:8000/auth/google", "_self");
+          };
          const [email, setEmail] = useState('');
          const [password, setPassword] = useState('');
         const navigate = useNavigate();
@@ -66,6 +69,12 @@
                              onClick={handleLogin}
                          >
                              Sign in
+                         </Button>
+
+                         <Button
+                         onClick={google}
+                         >
+                            Google
                          </Button>
                      </Card>
                  </div>

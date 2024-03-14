@@ -4,7 +4,7 @@ import UserSideBar from "../components/profile/UserSideBar";
 import AccountSetting from "../components/profile/AccountSetting"
 import "./profile.css"
 import Bookmark from "../components/profile/Bookmark";
-import Post from "../components/profile/Post";
+import {Post} from "../components/profile/Post";
 import PurchasedProperty from "../components/profile/PurchasedProperty";
 
 export const Profile = () => {

@@ -22,7 +22,7 @@ router.post("/properties", authenticateJwt,async (req, res) => {
     res.status(200).send({
         success: true,
         message: "property created"
-      });
+      });console.log(property);
     }catch (error) {
         console.error('An error occurred in /property route:', error);
         res.status(500).json({ message: 'An internal server error occurred' });
@@ -40,13 +40,66 @@ router.post("/properties", authenticateJwt,async (req, res) => {
     })
 });
 
+router.put('/posts/:postId', async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const updatedData = req.body; 
+
+    const updatedNote = await Property.findByIdAndUpdate(postId, updatedData, { new: true });
+
+    if (!updatedNote) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+    res.json(updatedNote);
+  } catch (error) {
+    console.error('Error updating note:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.get('/getpostdata/:postId', async (req, res) => {
+  try {
+      const postId = req.params.postId;
+      const postdata = await Property.findOne({ _id: postId });
+
+      if (!postdata) {
+          return res.json({
+              message: "Note not found for this postId",
+          });
+      }
+
+      res.json({
+          message: "success",
+          postdata,
+      });
+  } catch (error) {
+      console.error('An error occurred:', error);
+      res.json({
+          message: "An error occurred",
+      });
+  }
+});
+
+// router.get("/posts", authenticateJwt, async (req, res) => {
+//   try {
+//     const posts = await Property.find({
+//       author: req.user.id, 
+//     }).select('-author'); // Exclude the author field
+
+//     res.json(posts);
+//   } catch (error) {
+//     console.error('An error occurred in /posts route:', error);
+//     res.status(500).json({ message: 'An internal server error occurred' });
+//   }
+// });
+
   router.get("/posts", authenticateJwt, async (req, res) => {
     try {
-      const user = req.user;
+      // const user = req.user;
       const posts = await Property.find({
         author: req.user.id, 
       });
-      console.log(req.user.id);
+      // console.log(req.user.id);
       res.json(posts);
     } catch (error) {
       console.error('An error occurred in /posts route:', error);
@@ -68,34 +121,40 @@ router.post("/properties", authenticateJwt,async (req, res) => {
 
   router.post('/add', authenticateJwt, async (req, res) => {
     try {
-      const Username = req.user.username;
-  
-      // Find the user based on their username
-      const user = await User.findOne({ Username });
-  
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      // Create a new bookmark document
-      const newBookmark = new Bookmark({
-        title: req.body.title,
-        url: req.body.url,
-        author: user._id,
-      });
-  
-      // Save the new bookmark to the database
-      await newBookmark.save();
-  
-      res.status(201).json({
-        message: 'Bookmark added successfully',
-        id: newBookmark._id,
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Error adding bookmark' });
+
+      const { user, property } = req.body;
+      const newBookmark = await Bookmark.create({ user, property });
+      res.status(201).json(newBookmark);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
+      // const Username = req.user.username;
+  
+      // // Find the user based on their username
+      // const user = await User.findOne({ Username });
+  
+      // if (!user) {
+      //   return res.status(404).json({ message: "User not found" });
+      // }
+  
+      // // Create a new bookmark document
+      // const newBookmark = new Bookmark({
+      //   title: req.body.title,
+      //   url: req.body.url,
+      //   author: user._id,
+      // });
+  
+      // // Save the new bookmark to the database
+      // await newBookmark.save();
+  
+      // res.status(201).json({
+      //   message: 'Bookmark added successfully',
+      //   id: newBookmark._id,
+      // });
   });
+
+  
   
   router.get('/bookmarks', authenticateJwt, async (req, res) => {
     try {
@@ -126,6 +185,17 @@ router.post("/properties", authenticateJwt,async (req, res) => {
       res.status(500).json({ error: `Error fetching bookmarks: ${err.message}` });
     }
   });
+
+  router.delete('/deletepost/:id' ,async(req , res)=>{
+    try {
+      const { id } = req.params;
+      await Property.findByIdAndDelete(id);
+      res.json({ success: true });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, message: 'Error deleting the post' });
+    }
+  })
   
   router.delete('/delete/:id', async (req, res) => {
     try {

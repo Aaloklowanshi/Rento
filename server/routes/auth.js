@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const express = require('express');
 const { User } = require("../db");
 const { authenticateJwt, SECRET } = require("../middleware/"); 
-
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
@@ -61,6 +60,11 @@ router.get('/me', authenticateJwt, async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+const CLIENT_URL = "http://localhost:5173/";
+
+//goole auth
+
 
 
 

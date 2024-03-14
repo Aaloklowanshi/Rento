@@ -1,21 +1,21 @@
 const mongoose = require("mongoose");
 
 const bookmarkSchema = new mongoose.Schema({
-    title: {
-      type: String,
-      required: true,
-    },
-    url: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Property",
-      required: true,
-    },
-    author: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "User",
-      required:true
-     },
-  });
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  property: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Property',
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
   
 const PostSchema = new mongoose.Schema({
     user_id: { type: mongoose.Types.ObjectId, ref: "User" },
@@ -28,6 +28,7 @@ const PurchasedSchema = new mongoose.Schema({
 });
 
 const userSchema = new mongoose.Schema({
+    googleId:String,
     username: String,
     email: { type: String, unique: true, required: true },
     password: String,
